@@ -1,0 +1,29 @@
+﻿@page "/signin"
+
+@inject NavigationManager NavigationManager
+
+<h3>Sign In</h3>
+<div class="card w-25">
+	<div class="card-body">
+		<EditForm method="post" OnSubmit="SignInAsync" Model="User" FormName="LoginUser" class="w-100">
+			<InputText @bind-Value="User.Login" placeholder="Username" class="form-control" />
+			<br />
+			<InputText @bind-Value="User.Password" placeholder="Password" class="form-control" />
+			<br />
+			<button type="submit" class="btn btn-primary mt-2 w-100">Sign In</button>
+		</EditForm>
+	</div>
+</div>
+
+@code {
+	[CascadingParameter]
+	public HttpContext HttpContext { get; set; } = default!;
+
+	[SupplyParameterFromForm]
+	public UserModel User { get; set; } = new();
+
+	public async Task SignInAsync()
+	{
+		NavigationManager.NavigateTo("/");
+	}
+}

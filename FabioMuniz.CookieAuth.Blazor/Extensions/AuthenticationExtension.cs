@@ -9,7 +9,7 @@ public static class AuthenticationExtension
 		services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
 			.AddCookie(options =>
 			{
-				options.LoginPath = "/login";
+				options.LoginPath = "/signin";
 				options.AccessDeniedPath = "/unauthorized";
 			});
 		services.AddAuthorization();
