@@ -1,10 +1,13 @@
 using FabioMuniz.CookieAuth.Blazor.Components;
+using FabioMuniz.CookieAuth.Blazor.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddRazorComponents()
 	.AddInteractiveServerComponents();
+
+builder.Services.AddCookieAuthentication();
 
 var app = builder.Build();
 
