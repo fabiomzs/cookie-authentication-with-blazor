@@ -11,6 +11,7 @@ public static class AuthenticationExtension
 			{
 				options.LoginPath = "/signin";
 				options.AccessDeniedPath = "/unauthorized";
+				options.Cookie.Name = ".FabioMuniz.CookieAuth";
 			});
 		services.AddAuthorization();
 		services.AddCascadingAuthenticationState();

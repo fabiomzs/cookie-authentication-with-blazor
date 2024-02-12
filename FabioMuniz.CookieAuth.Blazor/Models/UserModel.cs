@@ -8,7 +8,7 @@ public class UserModel
     public string? Email { get; set; }
     public IEnumerable<string> Roles { get; set; } = Enumerable.Empty<string>();
 
-	public UserModel(string name, string login, string email, IEnumerable<string> roles)
+    public UserModel(string name, string login, string email, IEnumerable<string> roles)
 	{
 		Name = name;
 		Login = login;

@@ -1,7 +1,15 @@
 ﻿@page "/"
+@attribute [Authorize]
 
 <PageTitle>Home</PageTitle>
 
-<h1>Hello, world!</h1>
+<h1>Cookie Authentication APP!</h1>
 
-Welcome to your new app.
+Welcome to your new app. 
+<br />
+@HttpContext.User.Identity?.Name
+
+@code {
+	[CascadingParameter]
+	public HttpContext HttpContext { get; set; } = default!;
+}
