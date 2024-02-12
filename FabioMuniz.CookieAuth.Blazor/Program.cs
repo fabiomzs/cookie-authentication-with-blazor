@@ -8,6 +8,7 @@ builder.Services.AddRazorComponents()
 	.AddInteractiveServerComponents();
 
 builder.Services.AddCookieAuthentication();
+builder.Services.AddDependencyInjection();
 
 var app = builder.Build();
 
