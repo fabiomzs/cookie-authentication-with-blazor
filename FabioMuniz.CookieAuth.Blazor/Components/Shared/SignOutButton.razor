@@ -1,0 +1,19 @@
+﻿@inject ICookieAuthService CookieAuthService
+@inject NavigationManager NavigationManager
+
+<form method="post" @onsubmit="SignOutAsync" @formname="SignOut" class="w-100">
+	<div class="d-grid gap-2">
+		<button type="submit" class="btn btn-outline-primary btn-sm">Sign Out</button>
+	</div>
+	<AntiforgeryToken />
+</form>
+
+@code {
+
+	private async Task SignOutAsync()
+	{
+		await CookieAuthService.SignOutAsync();
+
+		NavigationManager.NavigateTo("/signin");
+	}
+}

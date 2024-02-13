@@ -36,11 +36,13 @@ public class CookieAuthService : ICookieAuthService
 			var authProps = new AuthenticationProperties()
 			{
 				IsPersistent = true,
-				ExpiresUtc = DateTimeOffset.UtcNow.AddHours(2),
-				
+				ExpiresUtc = DateTimeOffset.UtcNow.AddHours(2),				
 			};
 
-			await _httpContextAccessor.HttpContext!.SignInAsync(claimsPrincipal, authProps);
+			await _httpContextAccessor.HttpContext!.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, claimsPrincipal, authProps);
 		}
 	}
+
+	public async Task SignOutAsync() =>	await _httpContextAccessor.HttpContext!.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+	
 }

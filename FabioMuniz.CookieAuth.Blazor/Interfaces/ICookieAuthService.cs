@@ -3,4 +3,5 @@
 public interface ICookieAuthService
 {
 	Task SignInAsync(string username, string password);
+	Task SignOutAsync();
 }

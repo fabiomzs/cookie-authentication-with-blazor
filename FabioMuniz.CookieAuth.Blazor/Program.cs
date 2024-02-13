@@ -1,5 +1,7 @@
 using FabioMuniz.CookieAuth.Blazor.Components;
 using FabioMuniz.CookieAuth.Blazor.Extensions;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Identity;
 
 var builder = WebApplication.CreateBuilder(args);
 

@@ -9,9 +9,11 @@ public static class AuthenticationExtension
 		services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
 			.AddCookie(options =>
 			{
+				options.Cookie.Name = ".FabioMuniz.CookieAuth";
 				options.LoginPath = "/signin";
 				options.AccessDeniedPath = "/unauthorized";
-				options.Cookie.Name = ".FabioMuniz.CookieAuth";
+				options.ExpireTimeSpan = TimeSpan.FromHours(2);
+				options.Cookie.SameSite = SameSiteMode.Strict;
 			});
 		services.AddAuthorization();
 		services.AddCascadingAuthenticationState();
