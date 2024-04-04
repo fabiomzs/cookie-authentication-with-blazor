@@ -18,6 +18,7 @@ public class AuthenticateHandler : IRequestHandler<AuthenticateRequest, Authenti
     public async Task<AuthenticateResponse> Handle(AuthenticateRequest request, CancellationToken cancellationToken)
 	{		
 		var handler = new JwtSecurityTokenHandler();
+		handler.OutboundClaimTypeMap = new Dictionary<string, string>(); 
 		var key = Encoding.ASCII.GetBytes("534E4E35-DCFC-417D-AB73-389226BB30EB");
 		var credentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature);		
 

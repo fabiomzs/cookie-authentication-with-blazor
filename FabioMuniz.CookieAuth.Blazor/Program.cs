@@ -1,13 +1,18 @@
+using FabioMuniz.CookieAuth.Blazor;
 using FabioMuniz.CookieAuth.Blazor.Components;
 using FabioMuniz.CookieAuth.Blazor.Extensions;
-using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Identity;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddRazorComponents()
 	.AddInteractiveServerComponents();
+
+Configuration.AuthApi.UrlBase = builder.Configuration.GetSection("AppSettings").GetValue<string>("AuthApiBaseURL") ?? string.Empty;
+Configuration.AuthApi.Endpoint = builder.Configuration.GetSection("AppSettings").GetValue<string>("AuthApiEndpoint") ?? string.Empty;
+Configuration.AuthApi.HttpClientName = builder.Configuration.GetSection("AppSettings").GetValue<string>("AuthApiHttpClientName") ?? string.Empty;
+
+Configuration.Security.TokenExpiration = builder.Configuration.GetSection("AppSettings").GetValue<int>("TokenExpiration");
 
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddCookieAuthentication();

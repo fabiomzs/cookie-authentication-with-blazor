@@ -1,48 +1,60 @@
 ﻿using FabioMuniz.CookieAuth.Blazor.Interfaces;
+using FabioMuniz.CookieAuth.Blazor.Models;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using System.Text;
+using System.Text.Json;
 
 namespace FabioMuniz.CookieAuth.Blazor.Services;
 
 public class CookieAuthService : ICookieAuthService
 {
 	private readonly IHttpContextAccessor _httpContextAccessor;
-	private readonly ICookieAuthRepository _repository;
+	private readonly IHttpClientFactory _httpClientFactory;
 
-	public CookieAuthService(IHttpContextAccessor httpContextAccessor, ICookieAuthRepository repository)
+	public CookieAuthService(IHttpContextAccessor httpContextAccessor, IHttpClientFactory httpClientFactory)
 	{
 		_httpContextAccessor = httpContextAccessor;
-		_repository = repository;
+		_httpClientFactory = httpClientFactory;
 	}
 
-	public async Task SignInAsync(string username, string password)
+	public async Task SignInAsync(SignInRequest signInRequest)
 	{
 		var claims = new List<Claim>();
-		var user = await _repository.GetByLoginAsync(username, password);
+		
+		using HttpClient httpClient = _httpClientFactory.CreateClient(Configuration.AuthApi.HttpClientName);
 
-		if (user != null)
+		var content = new StringContent(JsonSerializer.Serialize(signInRequest), Encoding.UTF8, "application/json");
+
+		var response = await httpClient.PostAsync(Configuration.AuthApi.Endpoint, content);
+
+		var signInResponse = JsonSerializer.Deserialize<SignInResponse>(await response.Content.ReadAsStringAsync(), new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+
+		var jwt = GetSecurityToken(signInResponse.Jwt);
+
+		claims.Add(new Claim("jwt", signInResponse.Jwt));
+		claims.AddRange(jwt.Claims);
+
+		var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+		var claimsPrincipal = new ClaimsPrincipal(claimsIdentity);
+
+		var authProps = new AuthenticationProperties()
 		{
-			claims.Add(new Claim(ClaimTypes.Name, user.Name!));
-			claims.Add(new Claim(ClaimTypes.GivenName, user.Name!));
-			claims.Add(new Claim(ClaimTypes.Email, user.Email!));
+			IsPersistent = true,
+			ExpiresUtc = DateTimeOffset.UtcNow.AddHours(Configuration.Security.TokenExpiration),
+		};
 
-			foreach (var claim in user.Roles)
-				claims.Add(new Claim(ClaimTypes.Role, claim));
-
-			var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
-			var claimsPrincipal = new ClaimsPrincipal(claimsIdentity);
-
-			var authProps = new AuthenticationProperties()
-			{
-				IsPersistent = true,
-				ExpiresUtc = DateTimeOffset.UtcNow.AddHours(2),				
-			};
-
-			await _httpContextAccessor.HttpContext!.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, claimsPrincipal, authProps);
-		}
+		await _httpContextAccessor.HttpContext!.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, claimsPrincipal, authProps);
+		
 	}
 
 	public async Task SignOutAsync() =>	await _httpContextAccessor.HttpContext!.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+
+	private JwtSecurityToken GetSecurityToken(string jwt)
+	{
+		return new JwtSecurityTokenHandler().ReadToken(jwt) as JwtSecurityToken;
+	}
 	
 }

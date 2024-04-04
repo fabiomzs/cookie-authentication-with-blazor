@@ -22,7 +22,7 @@
 
 	public async Task SignInAsync()
 	{
-		await CookieAuthService.SignInAsync(User.Login!, User.Password!);
+		await CookieAuthService.SignInAsync(User);
 
 		NavigationManager.NavigateTo("/");
 	}

@@ -12,7 +12,7 @@ public static class AuthenticationExtension
 				options.Cookie.Name = ".FabioMuniz.CookieAuth";
 				options.LoginPath = "/signin";
 				options.AccessDeniedPath = "/unauthorized";
-				options.ExpireTimeSpan = TimeSpan.FromHours(2);
+				options.ExpireTimeSpan = TimeSpan.FromHours(Configuration.Security.TokenExpiration);
 				options.Cookie.SameSite = SameSiteMode.Strict;
 			});
 		services.AddAuthorization();
