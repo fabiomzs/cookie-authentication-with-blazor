@@ -30,7 +30,13 @@ public class CookieAuthService : ICookieAuthService
 
 		var response = await httpClient.PostAsync(Configuration.AuthApi.Endpoint, content);
 
-		var signInResponse = JsonSerializer.Deserialize<SignInResponse>(await response.Content.ReadAsStringAsync(), new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+		var signInResponse = JsonSerializer.Deserialize<SignInResponse>(
+			await response.Content.ReadAsStringAsync(), 
+			new JsonSerializerOptions
+			{
+				PropertyNameCaseInsensitive = true 
+				
+			});
 
 		var jwt = GetSecurityToken(signInResponse.Jwt);
 
